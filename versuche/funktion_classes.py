@@ -3,7 +3,6 @@ from sqlalchemy import Column, Numeric
 
 base = declarative_base()
 
-
 class Testfunktion(base):
     __tablename__ = 'Testfunktion'
     x = Column(Numeric, primary_key=True)

@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-import visualisierung
+
 import description
+import visualisierung
 from rechner import berechne_ideale_funktionen, berechne_testdaten
 from repository import Repository
-from funktion_classes import Testfunktion, Testdaten
-
 
 
 def main():
@@ -17,9 +16,9 @@ def main():
     print("Starting Programm ...")
 
     # read Files
-    df_train = pd.read_csv('data/Beispiel-Datensätze/train.csv')
-    df_ideal = pd.read_csv('data/Beispiel-Datensätze/ideal.csv')
-    df_test = pd.read_csv('data/Beispiel-Datensätze/test.csv')
+    df_train = pd.read_csv('../data/Beispiel-Datensätze/train.csv')
+    df_ideal = pd.read_csv('../data/Beispiel-Datensätze/ideal.csv')
+    df_test = pd.read_csv('../data/Beispiel-Datensätze/test.csv')
     # infos
     description.describe(df_train, 'Trainingsdatensaetze')
     description.describe(df_ideal, 'Ideale Funktionen')
@@ -62,6 +61,8 @@ def main():
     ###########################################################
 
     repo.addDataframe(df_cleaned_testdata, "Testdaten")
+
+
 
 
 if __name__ == "__main__":
