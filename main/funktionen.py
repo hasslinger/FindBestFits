@@ -1,35 +1,32 @@
-from matplotlib import pyplot as plt
-
 from entities import Testdaten
+from plotter import ScatterPlotter, LinePlotter
 
 
 class Funktion:
-    def __init__(self, x, y, id):
+    def __init__(self, x, y, id, plotter):
         self.x = x
         self.y = y
         self.id = id
+        self.plotter = plotter
 
     # + describe methode?
     def plot(self, legend, groesse):
         if legend:
-            plt.scatter(x=self.x, y=self.y, cmap=self.id, label=self.id, s=groesse)
+            self.plotter.plot_with_legend(self, groesse)
         else:
-            plt.scatter(x=self.x, y=self.y, c='tab:blue', s=groesse)
+            self.plotter.plot_without_legend(self, groesse)
 
 
 class Trainingsfunktion(Funktion):
     def __init__(self, x, y, label):
-        super().__init__(x, y, label)
+        super().__init__(x, y, label, ScatterPlotter())
 
 
 class IdealFunktion(Funktion):
     def __init__(self, x, y, label):
-        super().__init__(x, y, label)
+        super().__init__(x, y, label, LinePlotter())
         self.summe_abweichungen = None
         self.maximale_abweichung = None
-
-    def plot(self, legend, groesse):
-        plt.plot(self.x, self.y, label=self.id, lw=groesse)
 
     def get_y_from_x(self, x):
         return self.y.iloc[self.x[self.x == x].index[0]]
@@ -37,7 +34,7 @@ class IdealFunktion(Funktion):
 
 class Testdatensatz(Funktion):
     def __init__(self, x, y, id):
-        super().__init__(x, y, id)
+        super().__init__(x, y, id, ScatterPlotter())
         self.delta_y = None
         self.ideal_funk = None
 

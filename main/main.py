@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from converter import convert_to_array_of_idealfunktionen, convert_to_array_of_trainingsfunktionen, \
-    convert_to_array_of_testdaten
+from converter import convert_to_array_of_testdaten, convert_to_array_of_function
+from funktionen import Trainingsfunktion, IdealFunktion
 from rechner import berechne_ideale_funktionen, berechne_fitting_testdata
 from repository import Repository
 from visualisierung import plot_array_of_functions, plot_combined_solution
@@ -20,12 +20,12 @@ def main():
 
     # Trainingssaetze
     df_train = pd.read_csv('../data/Beispiel-Datensätze/train.csv')
-    array_of_trainingssaetze = convert_to_array_of_trainingsfunktionen(df_train)
+    array_of_trainingssaetze = convert_to_array_of_function(df_train, Trainingsfunktion)
     plot_array_of_functions(array_of_trainingssaetze, "Trainingsdatensätze", True, 0.8)
 
     # Idealfunktionen
     df_ideal = pd.read_csv('../data/Beispiel-Datensätze/ideal.csv')
-    array_of_all_idealfunktionen = convert_to_array_of_idealfunktionen(df_ideal)
+    array_of_all_idealfunktionen = convert_to_array_of_function(df_ideal, IdealFunktion)
     plot_array_of_functions(array_of_all_idealfunktionen, "Bereitgestellte ideale Funktionen", False, 0.8)
 
     # Testdaten
