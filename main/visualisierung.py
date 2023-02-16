@@ -18,27 +18,21 @@ def plot_array_of_functions(array_of_functions, title, legend, groesse):
     plt.show(block=False)
 
 
-def plot_combined_solution(array_of_fitting_testdaten, array_of_ideale_funktionen, array_of_all_testdaten_not_fitting,
-                           maximale_abweichung):
+def plot_combined_solution(collection_of_fitting_testdaten, collection_of_ideale_funktionen,
+                           collection_of_all_testdaten_not_fitting):
     plt.figure()
     plt.style.use('default')
-    colours = {array_of_ideale_funktionen[0].id: 'r', array_of_ideale_funktionen[1].id: 'g',
-               array_of_ideale_funktionen[2].id: 'b', array_of_ideale_funktionen[3].id: 'y'}
+    colors = collection_of_ideale_funktionen.get_color_dict()
+    #colors = {collection_of_ideale_funktionen.items[0].id: 'r', collection_of_ideale_funktionen.items[1].id: 'g', collection_of_ideale_funktionen.items[2].id: 'b', collection_of_ideale_funktionen.items[3].id: 'y'}
     fig, ax = plt.subplots()
     handles, labels = ax.get_legend_handles_labels()
     ax.legend([tuple(handles[::2]), tuple(handles[1::2])], labels[:2], handlelength=3,
               handler_map={tuple: HandlerTuple(ndivide=None)})
-    for given_function in array_of_fitting_testdaten:
-        plt.scatter(x=given_function.x, y=given_function.y, color=colours[given_function.ideal_funk], s=20)
-    for given_function in array_of_ideale_funktionen:
-        plt.plot(given_function.x, given_function.y, label=given_function.id, color=colours[given_function.id], lw=1)
+    collection_of_fitting_testdaten.plot_all_items(colors)
+    collection_of_ideale_funktionen.plot_all_items(colors)
+    collection_of_all_testdaten_not_fitting.plot_all_items()
 
-        plt.fill_between(given_function.x, given_function.y - maximale_abweichung,
-                         given_function.y + maximale_abweichung, alpha=0.2, facecolor=colours[given_function.id])
-    for given_function in array_of_all_testdaten_not_fitting:
-        plt.scatter(x=given_function.x, y=given_function.y, c='grey', s=20)
-
-    plt.title("COMBINED")
+    plt.title("Darstellung der idealen Testfunktionen und die zugehoerigen Testdaten")
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.legend(loc='best', markerscale=8)

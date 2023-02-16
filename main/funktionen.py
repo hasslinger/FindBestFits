@@ -16,6 +16,9 @@ class Funktion:
         else:
             self.plotter.plot_without_legend(self, groesse)
 
+    def plot_with_colors(self, color):
+        self.plotter.plot_with_colors(self, color)
+
 
 class Trainingsfunktion(Funktion):
     def __init__(self, x, y, label):
@@ -30,6 +33,9 @@ class IdealFunktion(Funktion):
 
     def get_y_from_x(self, x):
         return self.y.iloc[self.x[self.x == x].index[0]]
+
+    def plot_with_colors_and_abweichung(self, color, maximale_abweichung):
+        self.plotter.plot_with_colors_and_abweichung(self, color, maximale_abweichung)
 
 
 class Testdatensatz(Funktion):

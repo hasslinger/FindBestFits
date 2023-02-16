@@ -1,12 +1,10 @@
-import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from converter import convert_to_array_of_testdaten, convert_to_array_of_function
-from funktionen import Trainingsfunktion, IdealFunktion
+from collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, CollectionOfTestdaten
 from rechner import berechne_ideale_funktionen, berechne_fitting_testdata
 from repository import Repository
-from visualisierung import plot_array_of_functions, plot_combined_solution
+from visualisierung import plot_combined_solution
 
 
 def main():
@@ -20,18 +18,18 @@ def main():
 
     # Trainingssaetze
     df_train = pd.read_csv('../data/Beispiel-Datensätze/train.csv')
-    array_of_trainingssaetze = convert_to_array_of_function(df_train, Trainingsfunktion)
-    plot_array_of_functions(array_of_trainingssaetze, "Trainingsdatensätze", True, 0.8)
+    collection_of_trainingssaetze = CollectionOfTrainingsfunktionen(df_train)
+    collection_of_trainingssaetze.visualize_collection_as_figure()
 
     # Idealfunktionen
     df_ideal = pd.read_csv('../data/Beispiel-Datensätze/ideal.csv')
-    array_of_all_idealfunktionen = convert_to_array_of_function(df_ideal, IdealFunktion)
-    plot_array_of_functions(array_of_all_idealfunktionen, "Bereitgestellte ideale Funktionen", False, 0.8)
+    collection_of_idealfunktionen = CollectionOfIdealfunktionen(df_ideal)
+    collection_of_idealfunktionen.visualize_collection_as_figure()
 
     # Testdaten
     df_test = pd.read_csv('../data/Beispiel-Datensätze/test.csv')
-    array_of_all_testdaten = convert_to_array_of_testdaten(df_test)
-    plot_array_of_functions(array_of_all_testdaten, "Bereitgestellte Testdaten", False, 20)
+    collection_of_testdaten = CollectionOfTestdaten(df_test)
+    collection_of_testdaten.visualize_collection_as_figure()
 
     #########################################################
     # Persist tables #
@@ -45,33 +43,31 @@ def main():
     # Calculate 4 best Idealfunktionen #
     #########################################################
 
-    array_of_ideale_funktionen, maximale_abweichung = berechne_ideale_funktionen(
-        array_of_trainingssaetze, array_of_all_idealfunktionen)
-    plot_array_of_functions(array_of_ideale_funktionen, "Ermittelte ideale Funktionen fuer Trainingsdaten",
-                            True, 0.8)
+    collection_of_ideale_funktionen = berechne_ideale_funktionen(
+        collection_of_trainingssaetze, collection_of_idealfunktionen)
+    collection_of_ideale_funktionen.visualize_collection_as_figure("Ermittelte ideale Funktionen fuer Trainingsdaten",
+                                                                   True)
 
     #########################################################
     # Calculate fitting Testdata #
     #########################################################
 
     # Calculate
-    faktor_maximale_abweichung = maximale_abweichung + np.sqrt(2)
-    array_of_fitting_testdaten = berechne_fitting_testdata(
-        array_of_all_testdaten, array_of_ideale_funktionen, faktor_maximale_abweichung)
-    print(array_of_fitting_testdaten)
-    plot_array_of_functions(array_of_fitting_testdaten, "Fitting Testdaten", False, 20)
+    collection_of_fitting_testdaten = berechne_fitting_testdata(
+        collection_of_testdaten, collection_of_ideale_funktionen)
+    collection_of_fitting_testdaten.visualize_collection_as_figure("Fitting Testdaten")
 
     # Map and persist
-    fitting_testdaten_entities = list(map(lambda x: x.to_entity(), array_of_fitting_testdaten))
+    fitting_testdaten_entities = collection_of_fitting_testdaten.to_entities()
     repo.addAll(fitting_testdaten_entities)
 
     #########################################################
     # Visualize #
     #########################################################
 
-    plot_combined_solution(array_of_fitting_testdaten, array_of_ideale_funktionen,
-                           list(set(array_of_all_testdaten) - set(array_of_fitting_testdaten)),
-                           faktor_maximale_abweichung)
+    collection_of_testdaten.subtract(collection_of_fitting_testdaten)
+    plot_combined_solution(collection_of_fitting_testdaten, collection_of_ideale_funktionen,
+                           collection_of_testdaten)
 
     plt.show()
 
