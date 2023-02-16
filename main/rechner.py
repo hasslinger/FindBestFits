@@ -1,3 +1,4 @@
+from copy import copy
 
 import numpy as np
 
@@ -8,12 +9,12 @@ def berechne_quadratische_abweichung(idealfunktion, trainingsfunktion):
     return np.square(idealfunktion.y - trainingsfunktion.y)
 
 
-def berechne_abweichungen_idealfunktionen_zu_trainingsfunktion(array_of_all_idealfunktionen, trainingsfunktion):
-    for idealfunktion in array_of_all_idealfunktionen.items:
+def berechne_abweichungen_idealfunktionen_zu_trainingsfunktion(collection_of_all_idealfunktionen, trainingsfunktion):
+    for idealfunktion in collection_of_all_idealfunktionen.items:
         quadratische_abweichungen = berechne_quadratische_abweichung(idealfunktion, trainingsfunktion)
         idealfunktion.summe_abweichungen = quadratische_abweichungen.sum()
         idealfunktion.maximale_abweichung = quadratische_abweichungen.max()
-    return array_of_all_idealfunktionen
+    return collection_of_all_idealfunktionen
 
 
 def berechne_ideale_funktionen(collection_of_trainingssaetze, collection_of_all_idealfunktionen):
@@ -21,7 +22,7 @@ def berechne_ideale_funktionen(collection_of_trainingssaetze, collection_of_all_
     for trainingsfunktion in collection_of_trainingssaetze.items:
         collection_of_all_idealfunktionen = berechne_abweichungen_idealfunktionen_zu_trainingsfunktion(
             collection_of_all_idealfunktionen, trainingsfunktion)
-        ideale_funktion = collection_of_all_idealfunktionen.find_funktion_min_abweichungen()
+        ideale_funktion = copy(collection_of_all_idealfunktionen.find_funktion_min_abweichungen())
 
         print('Die geringste quadratische Abweichung zur Trainingsfunktion {} hat die ideale Funktion {}'.format(
             trainingsfunktion.id, ideale_funktion.id))
@@ -34,21 +35,20 @@ def berechne_ideale_funktionen(collection_of_trainingssaetze, collection_of_all_
     return collection_of_ideale_funktionen
 
 
-def berechne_delta_zu_idealen_funktionen(testdatensatz, collection_of_ideale_funktionen, faktor_maximale_abweichung):
+def berechne_delta_zu_idealen_funktionen(testdatensatz, collection_of_ideale_funktionen):
     for idealfunktion in collection_of_ideale_funktionen.items:
         y_ideal = idealfunktion.get_y_from_x(testdatensatz.x)
-        if abs(testdatensatz.y - y_ideal) <= faktor_maximale_abweichung:
+        if abs(testdatensatz.y - y_ideal) <= idealfunktion.get_faktor_maximale_abweichung():
             testdatensatz.delta_y = abs(testdatensatz.y - y_ideal)
             testdatensatz.ideal_funk = idealfunktion.id
             return testdatensatz
 
 
 def berechne_fitting_testdata(collection_of_testdaten, collection_of_ideale_funktionen):
-    faktor_maximale_abweichung = collection_of_ideale_funktionen.get_faktor_maximale_abweichung()
     collection_of_testdatensatz_calculated = CollectionOfTestdaten()
     for testdatensatz in collection_of_testdaten.items:
         collection_of_testdatensatz_calculated.add_item(berechne_delta_zu_idealen_funktionen(
-            testdatensatz, collection_of_ideale_funktionen, faktor_maximale_abweichung))
+            testdatensatz, collection_of_ideale_funktionen))
 
     collection_of_testdatensatz_calculated.drop_none_values()
     return collection_of_testdatensatz_calculated

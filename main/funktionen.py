@@ -1,3 +1,5 @@
+import numpy as np
+
 from entities import Testdaten
 from plotter import ScatterPlotter, LinePlotter
 
@@ -36,6 +38,9 @@ class IdealFunktion(Funktion):
 
     def plot_with_colors_and_abweichung(self, color, maximale_abweichung):
         self.plotter.plot_with_colors_and_abweichung(self, color, maximale_abweichung)
+
+    def get_faktor_maximale_abweichung(self):
+        return self.maximale_abweichung + np.sqrt(2)
 
 
 class Testdatensatz(Funktion):

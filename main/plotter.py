@@ -44,5 +44,5 @@ class LinePlotter(Plotter):
     def plot_with_colors_and_abweichung(self, funktion, color, maximale_abweichung):
         plt.plot(funktion.x, funktion.y, label=funktion.id, color=color, lw=1)
 
-        plt.fill_between(funktion.x, funktion.y - maximale_abweichung,
-                         funktion.y + maximale_abweichung, alpha=0.2, facecolor=color)
+        plt.fill_between(funktion.x, funktion.y + funktion.get_faktor_maximale_abweichung(),
+                         funktion.y - funktion.get_faktor_maximale_abweichung(), alpha=0.2, facecolor=color)

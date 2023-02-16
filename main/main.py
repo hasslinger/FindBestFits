@@ -48,6 +48,9 @@ def main():
     collection_of_ideale_funktionen.visualize_collection_as_figure("Ermittelte ideale Funktionen fuer Trainingsdaten",
                                                                    True)
 
+    for funktion in collection_of_ideale_funktionen.items:
+        print("Vier maximale Abweichungen: {}".format(funktion.maximale_abweichung))
+
     #########################################################
     # Calculate fitting Testdata #
     #########################################################

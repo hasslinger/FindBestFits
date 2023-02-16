@@ -49,13 +49,10 @@ class CollectionOfIdealfunktionen(CollectionOfFunctions):
     # overriding abstract method
     def plot_all_items(self, colors):
         for item in self.items:
-            item.plot_with_colors_and_abweichung(colors[item.id], self.get_faktor_maximale_abweichung())
+            item.plot_with_colors_and_abweichung(colors[item.id], item.get_faktor_maximale_abweichung())
 
     def find_funktion_min_abweichungen(self):
         return min(self.items, key=attrgetter('summe_abweichungen'))
-
-    def get_faktor_maximale_abweichung(self):
-        return self.maximale_abweichung + np.sqrt(2)
 
     def get_color_dict(self):
         return {self.items[0].id: 'r', self.items[1].id: 'g', self.items[2].id: 'b', self.items[3].id: 'y'}
