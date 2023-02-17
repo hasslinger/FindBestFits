@@ -24,7 +24,7 @@ class Testdaten(base):
     X = Column(Float, primary_key=True)
     Y1 = Column(Float, primary_key=True)
     delta_y = Column(Float)
-    ideal_funktion = Column(String)
+    ideal_funktion = Column(String, primary_key=True)
 
 
 class Idealdata(base):

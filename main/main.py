@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, CollectionOfTestdaten
 from rechner import berechne_ideale_funktionen, berechne_fitting_testdata
 from repository import Repository
-from visualisierung import plot_combined_solution
+from visualisierung import plot_combined_solution, plot_each_idealfunktion_with_testdaten
 
 
 def main():
@@ -56,21 +56,24 @@ def main():
     #########################################################
 
     # Calculate
-    collection_of_fitting_testdaten = berechne_fitting_testdata(
+    collection_of_testdatensatz_fitting, collection_of_testdatensatz_leftovers = berechne_fitting_testdata(
         collection_of_testdaten, collection_of_ideale_funktionen)
-    collection_of_fitting_testdaten.visualize_collection_as_figure("Fitting Testdaten")
+    collection_of_testdatensatz_fitting.visualize_collection_as_figure("Fitting Testdaten")
+    print("Anzahl fitting Testdaten: {}".format(len(collection_of_testdatensatz_fitting.items)))
 
     # Map and persist
-    fitting_testdaten_entities = collection_of_fitting_testdaten.to_entities()
+    fitting_testdaten_entities = collection_of_testdatensatz_fitting.to_entities()
     repo.addAll(fitting_testdaten_entities)
 
     #########################################################
     # Visualize #
     #########################################################
 
-    collection_of_testdaten.subtract(collection_of_fitting_testdaten)
-    plot_combined_solution(collection_of_fitting_testdaten, collection_of_ideale_funktionen,
-                           collection_of_testdaten)
+    plot_combined_solution(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
+                           collection_of_testdatensatz_leftovers)
+
+    plot_each_idealfunktion_with_testdaten(collection_of_ideale_funktionen, collection_of_testdaten, collection_of_testdatensatz_fitting)
+
 
     plt.show()
 

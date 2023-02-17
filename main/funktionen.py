@@ -43,6 +43,7 @@ class IdealFunktion(Funktion):
         return self.maximale_abweichung + np.sqrt(2)
 
 
+
 class Testdatensatz(Funktion):
     def __init__(self, x, y, id):
         super().__init__(x, y, id, ScatterPlotter())

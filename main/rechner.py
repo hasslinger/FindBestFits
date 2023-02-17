@@ -45,11 +45,19 @@ def berechne_delta_zu_idealen_funktionen(testdatensatz, collection_of_ideale_fun
 
 
 def berechne_fitting_testdata(collection_of_testdaten, collection_of_ideale_funktionen):
-    collection_of_testdatensatz_calculated = CollectionOfTestdaten()
-    for testdatensatz in collection_of_testdaten.items:
-        collection_of_testdatensatz_calculated.add_item(berechne_delta_zu_idealen_funktionen(
-            testdatensatz, collection_of_ideale_funktionen))
+    collection_of_testdatensatz_fitting = CollectionOfTestdaten()
+    collection_of_testdatensatz_leftovers = CollectionOfTestdaten()
+    collection_of_testdatensatz_leftovers.items = collection_of_testdaten.items.copy()
+    for idealfunktion in collection_of_ideale_funktionen.items:
+        for testdatensatz in collection_of_testdaten.items:
+            abweichung = abs(testdatensatz.y - idealfunktion.get_y_from_x(testdatensatz.x))
+            if abweichung <= idealfunktion.get_faktor_maximale_abweichung():
+                testdatensatz.delta_y = abweichung
+                testdatensatz.ideal_funk = idealfunktion.id
+                collection_of_testdatensatz_fitting.add_item(copy(testdatensatz))
+                collection_of_testdatensatz_leftovers.remove_if_present(testdatensatz)
 
-    collection_of_testdatensatz_calculated.drop_none_values()
-    return collection_of_testdatensatz_calculated
+
+    return collection_of_testdatensatz_fitting, collection_of_testdatensatz_leftovers
+
 

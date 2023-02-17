@@ -29,6 +29,9 @@ class CollectionOfFunctions:
     def add_item(self, item):
         self.items.append(item)
 
+    def remove_if_present(self, item):
+        if item in self.items:
+            self.items.remove(item)
 
 class CollectionOfTrainingsfunktionen(CollectionOfFunctions):
     def __init__(self, df=None):
@@ -55,7 +58,11 @@ class CollectionOfIdealfunktionen(CollectionOfFunctions):
         return min(self.items, key=attrgetter('summe_abweichungen'))
 
     def get_color_dict(self):
-        return {self.items[0].id: 'r', self.items[1].id: 'g', self.items[2].id: 'b', self.items[3].id: 'y'}
+        colors = dict()
+        possible_values = ['b','r','g','y']
+        for item in self.items:
+            colors[item.id] = possible_values.pop(0)
+        return colors
 
 
 class CollectionOfTestdaten(CollectionOfFunctions):
@@ -83,4 +90,6 @@ class CollectionOfTestdaten(CollectionOfFunctions):
         return list(map(lambda x: x.to_entity(), self.items))
 
     def subtract(self, collection_of_testdaten):
-        self.items = list(set(self.items) - set(collection_of_testdaten.items))
+        set1 = set((x.x, x.y) for x in collection_of_testdaten.items)
+        self.items = [x for x in self.items if (x.x, x.y) not in set1]
+        #self.items = list(filter(lambda x: x not in collection_of_testdaten.items, self.items))
