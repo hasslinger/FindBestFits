@@ -1,15 +1,15 @@
-from sqlalchemy import create_engine, text
-from funktion_classes import Testfunktion, base
+from sqlalchemy import create_engine
+from persistence.entities import base
 from sqlalchemy.orm import sessionmaker
 import os
+
 
 class Repository:
     def __init__(self):
 
-        os.remove('bestFit.db')
+        os.remove('persistence/bestFit.db')
 
-        #engine = create_engine('sqlite:///college.db', echo=True)
-        self.engine = create_engine('sqlite:///bestFit.db', echo=False)
+        self.engine = create_engine('sqlite:///persistence/bestFit.db', echo=False)
 
         base.metadata.create_all(self.engine)
 
@@ -31,4 +31,3 @@ class Repository:
 
     def addDataframe(self, df, type):
         df.to_sql(type, self.engine, if_exists='append', index=False)
-

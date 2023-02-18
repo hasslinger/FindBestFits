@@ -2,7 +2,8 @@ from copy import copy
 
 import numpy as np
 
-from collections_wrapper import CollectionOfTestdaten, CollectionOfIdealfunktionen
+#from collections_wrapper import CollectionOfTestdaten, CollectionOfIdealfunktionen
+from model.collections_wrapper import CollectionOfTestdaten, CollectionOfIdealfunktionen
 
 
 def berechne_quadratische_abweichung(idealfunktion, trainingsfunktion):

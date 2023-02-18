@@ -1,7 +1,7 @@
 import numpy as np
 
-from entities import Testdaten
-from plotter import ScatterPlotter, LinePlotter
+from persistence.entities import Testdaten
+from model.plotter import ScatterPlotter, LinePlotter
 
 
 class Funktion:

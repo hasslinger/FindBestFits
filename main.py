@@ -1,10 +1,10 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, CollectionOfTestdaten
-from rechner import berechne_ideale_funktionen, berechne_fitting_testdata
-from repository import Repository
-from visualisierung import plot_combined_solution, plot_each_idealfunktion_with_testdaten
+from model.collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, CollectionOfTestdaten
+from util.rechner import berechne_ideale_funktionen, berechne_fitting_testdata
+from persistence.repository import Repository
+from util.visualisierung import plot_combined_solution
 
 
 def main():
@@ -17,17 +17,17 @@ def main():
     #########################################################
 
     # Trainingssaetze
-    df_train = pd.read_csv('../data/Beispiel-Datensätze/train.csv')
+    df_train = pd.read_csv('resources/data/train.csv')
     collection_of_trainingssaetze = CollectionOfTrainingsfunktionen(df_train)
     collection_of_trainingssaetze.visualize_collection_as_figure()
 
     # Idealfunktionen
-    df_ideal = pd.read_csv('../data/Beispiel-Datensätze/ideal.csv')
+    df_ideal = pd.read_csv('resources/data/ideal.csv')
     collection_of_idealfunktionen = CollectionOfIdealfunktionen(df_ideal)
     collection_of_idealfunktionen.visualize_collection_as_figure()
 
     # Testdaten
-    df_test = pd.read_csv('../data/Beispiel-Datensätze/test.csv')
+    df_test = pd.read_csv('resources/data/test.csv')
     collection_of_testdaten = CollectionOfTestdaten(df_test)
     collection_of_testdaten.visualize_collection_as_figure()
 
@@ -72,8 +72,23 @@ def main():
     plot_combined_solution(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
                            collection_of_testdatensatz_leftovers)
 
-    plot_each_idealfunktion_with_testdaten(collection_of_ideale_funktionen, collection_of_testdaten, collection_of_testdatensatz_fitting)
+    print("Laenge: {}".format(len(collection_of_testdatensatz_fitting.items)))
+    for idealfunktion in collection_of_ideale_funktionen.items:
+        collection_of_single_idealfunktion = CollectionOfIdealfunktionen()
+        collection_of_single_idealfunktion.items.append(idealfunktion)
+        collection_of_testdaten_fitting_ideal = CollectionOfTestdaten()
+        collection_of_all_testdaten = CollectionOfTestdaten()
+        collection_of_all_testdaten.items = collection_of_testdaten.items.copy()
+        for item in collection_of_testdatensatz_fitting.items:
+            if item.ideal_funk == idealfunktion.id:
+                collection_of_testdaten_fitting_ideal.add_item(item)
+        collection_of_all_testdaten.subtract(collection_of_testdaten_fitting_ideal)
+        print("Länge Gesamt {} | Fitting {} | Not fitting {}".format(len(collection_of_testdaten_fitting_ideal.items) + len(collection_of_all_testdaten.items), len(collection_of_testdaten_fitting_ideal.items), len(collection_of_all_testdaten.items)))
 
+        plot_combined_solution(collection_of_testdaten_fitting_ideal, collection_of_single_idealfunktion,
+                               collection_of_all_testdaten)
+    # plot_each_idealfunktion_with_testdaten(collection_of_ideale_funktionen, collection_of_testdaten,
+    #                                        collection_of_testdatensatz_fitting)
 
     plt.show()
 

@@ -2,10 +2,8 @@ from abc import abstractmethod
 from functools import partial
 from operator import attrgetter, is_not
 
-import numpy as np
-
-from funktionen import IdealFunktion, Trainingsfunktion, Testdatensatz
-from visualisierung import plot_array_of_functions
+from model.funktionen import IdealFunktion, Trainingsfunktion, Testdatensatz
+from util.visualisierung import plot_array_of_functions
 
 
 class CollectionOfFunctions:
@@ -92,4 +90,3 @@ class CollectionOfTestdaten(CollectionOfFunctions):
     def subtract(self, collection_of_testdaten):
         set1 = set((x.x, x.y) for x in collection_of_testdaten.items)
         self.items = [x for x in self.items if (x.x, x.y) not in set1]
-        #self.items = list(filter(lambda x: x not in collection_of_testdaten.items, self.items))
