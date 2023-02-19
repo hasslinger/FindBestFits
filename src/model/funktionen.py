@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 
 import numpy as np
 
+from exception.FindBestFitsException import FindBestFitsException
 from persistence.entities import Testdaten
 from model.plotter import ScatterPlotter, LinePlotter
 
@@ -59,7 +60,11 @@ class IdealFunktion(Funktion):
         self.maximale_abweichung = None
 
     def get_y_from_x(self, x):
-        return self.y.iloc[self.x[self.x == x].index[0]]
+        fitting_x = self.x[self.x == x]
+        if fitting_x.empty:
+            raise FindBestFitsException(
+                'Es konnte kein y-Wert zum x-Wert={} in der Idealfunktion={} gefunden werden'.format(x, self.id))
+        return self.y.iloc[fitting_x.index[0]]
 
     def get_faktor_maximale_abweichung(self):
         return self.maximale_abweichung + np.sqrt(2)

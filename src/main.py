@@ -1,6 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
+from configuration.logging_configuration import log
+from exception.FindBestFitsException import FindBestFitsException
 from model.collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, \
     CollectionOfTestdaten
 from persistence.repository import Repository
@@ -82,5 +84,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except FindBestFitsException:
+        log.error("Bei der Ausfuehrung des Programms ist eine checked Exception aufgetreten. Bitte pruefen!")
 

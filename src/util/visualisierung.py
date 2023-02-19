@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from matplotlib.legend_handler import HandlerTuple
 
 from configuration.logging_configuration import log
+from exception.FindBestFitsException import FindBestFitsException
 
 
 def plot_array_of_functions(array_of_functions, title, legend, groesse):
@@ -88,6 +89,10 @@ def plot_each_idealfunktion_mit_testdaten(collection_of_testdatensatz_fitting, c
                  "Gesamt %s | Fitting %s | Not fitting %s", idealfunktion.id,
                  collection_of_testdaten_fitting_ideal.length() + collection_of_all_testdaten.length(),
                  collection_of_testdaten_fitting_ideal.length(), collection_of_all_testdaten.length())
+        if collection_of_testdaten.length() != \
+                collection_of_testdaten_fitting_ideal.length() + collection_of_all_testdaten.length():
+            raise FindBestFitsException(
+                'Die Summe der fitting und not fitting Testdaten unterscheidet sich von der Gesamtzahl an Testdaten')
 
         plot_combined_solution(collection_of_testdaten_fitting_ideal, collection_of_single_idealfunktion,
                                collection_of_all_testdaten, colors)

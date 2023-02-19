@@ -4,6 +4,7 @@ from operator import attrgetter
 import pandas as pd
 
 from configuration.logging_configuration import log
+from exception.FindBestFitsException import FindBestFitsException
 from model.funktionen import IdealFunktion, Trainingsfunktion, Testdatensatz
 from util.visualisierung import plot_array_of_functions
 
@@ -16,6 +17,7 @@ class CollectionOfFunktionen(ABC):
     Es werden wiederkehrend auftretendende Operationen auf den Sammlungen von Funktionen zentralisiert.
     Operationen, die unabhängig vom Funktionstyp sind, werden in dieser Klasse gesammelt.
     '''
+
     @abstractmethod
     def __init__(self, data, function_class):
         self.items = []
@@ -56,6 +58,7 @@ class CollectionOfTrainingsfunktionen(CollectionOfFunktionen):
     '''
     Eine Wrapper Klasse zur Sammlung von Trainingsfunktionen.
     '''
+
     def __init__(self, data=None):
         super().__init__(data, Trainingsfunktion)
 
@@ -67,6 +70,7 @@ class CollectionOfIdealfunktionen(CollectionOfFunktionen):
     '''
     Eine Wrapper Klasse zur Sammlung von Idealfunktionen.
     '''
+
     def __init__(self, data=None):
         super().__init__(data, IdealFunktion)
 
@@ -80,6 +84,8 @@ class CollectionOfIdealfunktionen(CollectionOfFunktionen):
         '''Ordnet jeder Idealfunktion eine Farbe zu und returned das Ergebnis als Dictionary'''
         colors = dict()
         possible_values = ['b', 'r', 'g', 'y']
+        if len(possible_values) < len(self.items):
+            raise FindBestFitsException('Es gibt mehr Idealfunktionen als moegliche Farben.')
         for item in self.items:
             colors[item.id] = possible_values.pop(0)
         return colors
@@ -89,6 +95,7 @@ class CollectionOfTestdaten(CollectionOfFunktionen):
     '''
     Eine Wrapper Klasse zur Sammlung von Testdaten.
     '''
+
     def __init__(self, data=None):
         if isinstance(data, pd.DataFrame):
             data = [(Testdatensatz(row.x, row.y, index)) for index, row in data.iterrows()]
