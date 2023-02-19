@@ -12,6 +12,7 @@ class Plotter(ABC):
     def plot_without_legend(self, funktion, groesse):
         pass
 
+    @abstractmethod
     def plot_with_color(self, funktion, color):
         pass
 
@@ -41,7 +42,7 @@ class LinePlotter(Plotter):
     def plot_without_legend(self, funktion, groesse):
         plt.plot(funktion.x, funktion.y, lw=groesse)
 
-    def plot_with_color_and_abweichung(self, funktion, color, maximale_abweichung):
+    def plot_with_color(self, funktion, color):
         plt.plot(funktion.x, funktion.y, label=funktion.id, color=color, lw=1)
 
         plt.fill_between(funktion.x, funktion.y + funktion.get_faktor_maximale_abweichung(),

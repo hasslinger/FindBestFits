@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 import pandas as pd
 from matplotlib import pyplot as plt
 
@@ -83,3 +81,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

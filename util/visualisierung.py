@@ -49,15 +49,17 @@ def plot_each_idealfunktion_mit_testdaten(collection_of_testdatensatz_fitting, c
                                           collection_of_testdaten):
     colors = collection_of_ideale_funktionen.get_color_dict()
     for idealfunktion in collection_of_ideale_funktionen.items:
-        collection_of_testdaten_fitting_ideal = collection_of_testdatensatz_fitting.get_new_with_ids([idealfunktion.id])
-        collection_of_single_idealfunktion = collection_of_ideale_funktionen.get_new_with_ids([idealfunktion.id])
+        collection_of_testdaten_fitting_ideal = \
+            collection_of_testdatensatz_fitting.get_new_collection_with_zugeordnete_items([idealfunktion.id])
+        collection_of_single_idealfunktion = \
+            collection_of_ideale_funktionen.get_new_collection_with_zugeordnete_items([idealfunktion.id])
         collection_of_all_testdaten = deepcopy(collection_of_testdaten)
         collection_of_all_testdaten.subtract(collection_of_testdaten_fitting_ideal)
 
         log.info("Plotting Idealfunktion \'%s\'. Die Testdaten verteilen sich hier wie folgt: "
                  "Gesamt %s | Fitting %s | Not fitting %s", idealfunktion.id,
-                 len(collection_of_testdaten_fitting_ideal.items) + len(collection_of_all_testdaten.items),
-                 len(collection_of_testdaten_fitting_ideal.items), len(collection_of_all_testdaten.items))
+                 collection_of_testdaten_fitting_ideal.length() + collection_of_all_testdaten.length(),
+                 collection_of_testdaten_fitting_ideal.length(), collection_of_all_testdaten.length())
 
         plot_combined_solution(collection_of_testdaten_fitting_ideal, collection_of_single_idealfunktion,
                                collection_of_all_testdaten, colors)

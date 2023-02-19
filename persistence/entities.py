@@ -1,13 +1,7 @@
-from sqlalchemy import Column, Integer, Float, String, Numeric
+from sqlalchemy import Column, Float, String, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 
 base = declarative_base()
-
-
-class BaseData(base):
-    __tablename__ = 'Basedata'
-    X = Column(Float, primary_key=True)
-    Y1 = Column(Float)
 
 
 class Trainingsdaten(base):
