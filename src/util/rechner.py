@@ -7,14 +7,33 @@ from model.collections_wrapper import CollectionOfTestdaten, CollectionOfIdealfu
 
 
 def berechne_quadratische_abweichung(idealfunktion, trainingsfunktion):
+    '''
+    Berechnet die quadratische Abweichung zwischen den y-Werten von zwei Funktion
+    :param idealfunktion: erste Funktion
+    :param trainingsfunktion: zweite Funktion
+    :return: Array mit den quadratischen Abweichungen aller y-Werte
+    '''
     return np.square(idealfunktion.y - trainingsfunktion.y)
 
 
 def berechne_absolute_abweichung(testdatensatz, idealfunktion):
+    '''
+    Berechnet die absolute Abweichung zwischen den y-Werten von zwei Funktion
+    :param testdatensatz: erste Funktion
+    :param idealfunktion: zweite Funktion
+    :return: Absolute Abweichung
+    '''
     return abs(testdatensatz.y - idealfunktion.get_y_from_x(testdatensatz.x))
 
 
 def berechne_abweichungen_idealfunktionen_zu_trainingsfunktion(col_all_idealfunktionen, trainingsfunktion):
+    '''
+    Berechnet die Abweichung aller Eintraege einer Collection von Idealfunktionen zu einer bestimmten Trainingsfunktion.
+    Dabei wird die Summe der quadratischen Abweichungen und die maximale Abweichung einer Idealfunktion ermittelt und gesetzt.
+    :param col_all_idealfunktionen: Collection der Idealfunktionen
+    :param trainingsfunktion: Bestimmte Trainingsfunktion
+    :return: Collection der Idealfunktion mit gesetzten Abweichungen
+    '''
     for idealfunktion in col_all_idealfunktionen.items:
         quadratische_abweichungen = berechne_quadratische_abweichung(idealfunktion, trainingsfunktion)
         idealfunktion.summe_abweichungen = quadratische_abweichungen.sum()
@@ -23,6 +42,12 @@ def berechne_abweichungen_idealfunktionen_zu_trainingsfunktion(col_all_idealfunk
 
 
 def berechne_ideale_funktionen(col_trainingssaetze, col_all_idealfunktionen):
+    '''
+    Berechnet fuer eine Collection von Trainingssaetzen die Idealfunktionen mit der geringsten Abweichung.
+    :param col_trainingssaetze: Collection von Trainingssaetzen
+    :param col_all_idealfunktionen: Collection von Idealfunktionen
+    :return: Collection mit den Idealfunktionen mit der geringsten Abweichung
+    '''
     col_ideale_funktionen = CollectionOfIdealfunktionen()
 
     for trainingsfunktion in col_trainingssaetze.items:
@@ -38,16 +63,18 @@ def berechne_ideale_funktionen(col_trainingssaetze, col_all_idealfunktionen):
     return col_ideale_funktionen
 
 
-def berechne_delta_zu_idealen_funktionen(testdatensatz, col_ideale_funktionen):
-    for idealfunktion in col_ideale_funktionen.items:
-        y_ideal = idealfunktion.get_y_from_x(testdatensatz.x)
-        if abs(testdatensatz.y - y_ideal) <= idealfunktion.get_faktor_maximale_abweichung():
-            testdatensatz.delta_y = abs(testdatensatz.y - y_ideal)
-            testdatensatz.ideal_funk = idealfunktion.id
-            return testdatensatz
-
-
 def berechne_fitting_testdata(col_testdaten, col_ideale_funktionen):
+    '''
+    Berechnet welche Testdaten sich an welche Idealfunktion anfitten lassen.
+    Das Kriterium ist hierbei, dass die Abweichung kleiner als die maximale Abweichung der Idealfunktion
+    zur Trainingsfunktion plus die Wurzel aus zwei sein muss.
+    Passt ein Testdatensatz zu mehreren Idealfunktionen, wird je passender Idealfunktion ein Testdatensatz angelegt.
+    Auch wir nachgehalten, welche Testdaten sich an keiner Idealfunktion anfitten lassen.
+    :param col_testdaten: Collection aller Testdatensaetze
+    :param col_ideale_funktionen: Collection der Idealfunktionen
+    :return: Eine Collection mit den Testdaten, die sich an eine Idealfunktion fitten lassen
+    und eine Collection mit den Testdaten, die zu keiner Idealfunktion passten.
+    '''
     log.info('Anzahl Testdaten gesamt: %s', col_testdaten.length())
     col_testdatensatz_fitting = CollectionOfTestdaten()
     col_testdatensatz_leftovers = deepcopy(col_testdaten)

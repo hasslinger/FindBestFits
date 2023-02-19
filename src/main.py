@@ -9,9 +9,13 @@ from util.visualisierung import plot_combined_solution, plot_each_idealfunktion_
 
 
 def main():
-    """
-    This part of the script will only be executed if the script is called directly (not by import on another script)
-    """
+    '''
+    Ermittelt fuer eine Sammlung an Trainingssaetzen die jeweils best passensten Idealfunktionen.
+    Anhand derer werden dann Testdaten entsprechenden Idealfunktionen zugeordnet bzw. aussortiert, wenn sie sich
+    nicht an eine der Funktionen anfitten lassen.
+    Die gegebenen Ausgangsdaten, sowie die ermittelten Ergebnisse werden in einer SQLite Datenbank persistiert
+    und mit matplotlib visualisiert.
+    '''
 
     #########################################################
     # read Files #
@@ -54,7 +58,6 @@ def main():
     #########################################################
 
     # Calculate
-
     collection_of_testdatensatz_fitting, collection_of_testdatensatz_leftovers = berechne_fitting_testdata(
         collection_of_testdaten, collection_of_ideale_funktionen)
     collection_of_testdatensatz_fitting.visualize_collection_as_figure("Fitting Testdaten")
@@ -68,12 +71,12 @@ def main():
     #########################################################
 
     # All combined
-    plot_combined_solution(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
-                           collection_of_testdatensatz_leftovers)
+    plot_combined_solution(
+        collection_of_testdatensatz_fitting, collection_of_ideale_funktionen, collection_of_testdatensatz_leftovers)
 
     # Each Idealfunktion
-    plot_each_idealfunktion_mit_testdaten(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
-                                          collection_of_testdaten)
+    plot_each_idealfunktion_mit_testdaten(
+        collection_of_testdatensatz_fitting, collection_of_ideale_funktionen, collection_of_testdaten)
 
     plt.show()
 

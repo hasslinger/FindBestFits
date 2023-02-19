@@ -13,6 +13,11 @@ def silentremove(filename):
 
 
 class Repository:
+    '''
+    Diese Klasse dient als Persistenzschicht.
+    Sie loescht alte Datenbank Staende und erzeugt bei jedem Programmstart eine neue SQLite Datenbank.
+    Saemtliche explizite Zugriffe auf die Datenbank, sollen ueber das Repository erfolgen.
+    '''
     def __init__(self):
         silentremove('persistence/bestFit.db')
 

@@ -10,7 +10,9 @@ from util.rechner import berechne_quadratische_abweichung, berechne_absolute_abw
 
 
 class TestRechner(unittest.TestCase):
-
+    '''
+    Testet alle Funktionen der rechner.py
+    '''
     def test_berechne_quadratische_abweichung(self):
         idealfunktion = IdealFunktion(pd.Series([5, 4, 6]), pd.Series([5, 10, 0]), 'y2')
         trainingsfunktion = Trainingsfunktion(pd.Series([5, 4, 6]), pd.Series([10, 5, 0]), 'y5')

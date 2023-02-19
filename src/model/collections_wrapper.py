@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from operator import attrgetter
 
 import pandas as pd
@@ -7,7 +8,15 @@ from model.funktionen import IdealFunktion, Trainingsfunktion, Testdatensatz
 from util.visualisierung import plot_array_of_functions
 
 
-class CollectionOfFunctions:
+class CollectionOfFunktionen(ABC):
+    '''
+    Abstrakte Oberklasse fuer alle Collections von Funktionen.
+    Diese Collections dienen als Wrapper um verschiedene Funktionstypen
+    (Trainingsfunktion, IdealFunktion, Testdatensatz) zu halten.
+    Es werden wiederkehrend auftretendende Operationen auf den Sammlungen von Funktionen zentralisiert.
+    Operationen, die unabhängig vom Funktionstyp sind, werden in dieser Klasse gesammelt.
+    '''
+    @abstractmethod
     def __init__(self, data, function_class):
         self.items = []
         if isinstance(data, pd.DataFrame):
@@ -16,6 +25,7 @@ class CollectionOfFunctions:
         elif isinstance(data, list):
             self.items = data
 
+    @abstractmethod
     def visualize_collection_as_figure(self, label, legend, groesse):
         plot_array_of_functions(self.items, label, legend, groesse)
 
@@ -24,6 +34,7 @@ class CollectionOfFunctions:
         self.items.append(item)
 
     def remove_if_present(self, item):
+        '''Entfernt alle Testdaten dessen x und y Wert dem von item entspricht'''
         self.items = [x for x in self.items if not (x.x == item.x and x.y == item.y)]
 
     def plot_all_items(self, color='grey'):
@@ -33,14 +44,18 @@ class CollectionOfFunctions:
             else:
                 item.plot_with_color(color)
 
-    def get_new_collection_with_zugeordnete_items(self, ideal_funk_ids):
-        return self.__class__(list(filter(lambda x: x.get_zuordnung() in ideal_funk_ids, self.items)))
+    def get_new_collection_with_zugeordnete_items(self, ids):
+        '''Filtert Funktionen heraus, welche einer der ids zugeordnet sind und returned eine neue Collection'''
+        return self.__class__(list(filter(lambda x: x.get_zuordnung() in ids, self.items)))
 
     def length(self):
         return len(self.items)
 
 
-class CollectionOfTrainingsfunktionen(CollectionOfFunctions):
+class CollectionOfTrainingsfunktionen(CollectionOfFunktionen):
+    '''
+    Eine Wrapper Klasse zur Sammlung von Trainingsfunktionen.
+    '''
     def __init__(self, data=None):
         super().__init__(data, Trainingsfunktion)
 
@@ -48,7 +63,10 @@ class CollectionOfTrainingsfunktionen(CollectionOfFunctions):
         super().visualize_collection_as_figure(label, legend, groesse)
 
 
-class CollectionOfIdealfunktionen(CollectionOfFunctions):
+class CollectionOfIdealfunktionen(CollectionOfFunktionen):
+    '''
+    Eine Wrapper Klasse zur Sammlung von Idealfunktionen.
+    '''
     def __init__(self, data=None):
         super().__init__(data, IdealFunktion)
 
@@ -59,6 +77,7 @@ class CollectionOfIdealfunktionen(CollectionOfFunctions):
         return min(self.items, key=attrgetter('summe_abweichungen'))
 
     def get_color_dict(self):
+        '''Ordnet jeder Idealfunktion eine Farbe zu und returned das Ergebnis als Dictionary'''
         colors = dict()
         possible_values = ['b', 'r', 'g', 'y']
         for item in self.items:
@@ -66,7 +85,10 @@ class CollectionOfIdealfunktionen(CollectionOfFunctions):
         return colors
 
 
-class CollectionOfTestdaten(CollectionOfFunctions):
+class CollectionOfTestdaten(CollectionOfFunktionen):
+    '''
+    Eine Wrapper Klasse zur Sammlung von Testdaten.
+    '''
     def __init__(self, data=None):
         if isinstance(data, pd.DataFrame):
             data = [(Testdatensatz(row.x, row.y, index)) for index, row in data.iterrows()]
@@ -79,5 +101,5 @@ class CollectionOfTestdaten(CollectionOfFunctions):
         return list(map(lambda x: x.to_entity(), self.items))
 
     def subtract(self, collection_of_testdaten):
-        set1 = set((x.x, x.y) for x in collection_of_testdaten.items)
-        self.items = [x for x in self.items if (x.x, x.y) not in set1]
+        for item in collection_of_testdaten.items:
+            self.remove_if_present(item)

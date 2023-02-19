@@ -7,6 +7,12 @@ from model.plotter import ScatterPlotter, LinePlotter
 
 
 class Funktion(ABC):
+    '''
+    Abstrakte Oberklasse fuer alle im Programm genutzten Funktionen (Trainingsfunktion, IdealFunktion, Testdatensatz).
+    Jede Funktion muss bestimmte Attribute haben, welche in der Oberklasse gesammelt werden.
+    Außerdem werden Methoden gesammelt, die auf allen Funktionen gleichermaßen ausgefuehrt werden.
+    '''
+    @abstractmethod
     def __init__(self, x, y, id, plotter):
         self.x = x
         self.y = y
@@ -28,6 +34,11 @@ class Funktion(ABC):
 
 
 class Trainingsfunktion(Funktion):
+    '''
+    Eine Klasse fuer alle Trainingsfunktionen.
+    Zur Visualisierung der Trainingsfunktionen soll in diesem Fall der ScatterPlotter genutzt werden.
+    X und Y werden bei dieser Funktion durch pandas Series dargestellt.
+    '''
     def __init__(self, x, y, label):
         super().__init__(x, y, label, ScatterPlotter())
 
@@ -36,6 +47,12 @@ class Trainingsfunktion(Funktion):
 
 
 class IdealFunktion(Funktion):
+    '''
+    Eine Klasse fuer alle idealen Funktionen.
+    Zur Visualisierung der idealen Funktionen soll in diesem Fall der LinePlotter genutzt werden.
+    X und Y werden bei dieser Funktion durch pandas Series dargestellt.
+    Zudem wird pro idealfunktion die Summe der Abweichungen zu den Trainingsdaten und die maximale Abweichung gehalten.
+    '''
     def __init__(self, x, y, label):
         super().__init__(x, y, label, LinePlotter())
         self.summe_abweichungen = None
@@ -52,6 +69,13 @@ class IdealFunktion(Funktion):
 
 
 class Testdatensatz(Funktion):
+    '''
+    Eine Klasse fuer alle Testdatensaetze.
+    Zur Visualisierung der idealen Funktionen soll in diesem Fall der ScatterPlotter genutzt werden.
+    Ein Testdatensatz ist in diesem Fall ein einzelner Punkt. X und Y sind daher float64 Werte.
+    Zudem kann ein Testdatensatz einer idealen Funktion mit entsprechender Abweichung zugeordnet werden.
+    Das Resultat kann dann direkt in eine Entitaet umgewandelt werden.
+    '''
     def __init__(self, x, y, id):
         super().__init__(x, y, id, ScatterPlotter())
         self.delta_y = None
