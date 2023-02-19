@@ -18,8 +18,8 @@ class Funktion:
         else:
             self.plotter.plot_without_legend(self, groesse)
 
-    def plot_with_colors(self, color):
-        self.plotter.plot_with_colors(self, color)
+    def plot_with_color(self, color):
+        self.plotter.plot_with_color(self, color)
 
 
 class Trainingsfunktion(Funktion):
@@ -36,8 +36,8 @@ class IdealFunktion(Funktion):
     def get_y_from_x(self, x):
         return self.y.iloc[self.x[self.x == x].index[0]]
 
-    def plot_with_colors_and_abweichung(self, color, maximale_abweichung):
-        self.plotter.plot_with_colors_and_abweichung(self, color, maximale_abweichung)
+    def plot_with_color(self, color):
+        self.plotter.plot_with_color_and_abweichung(self, color, self.maximale_abweichung)
 
     def get_faktor_maximale_abweichung(self):
         return self.maximale_abweichung + np.sqrt(2)

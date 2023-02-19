@@ -1,10 +1,14 @@
+from copy import deepcopy
+
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from model.collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, CollectionOfTestdaten
-from util.rechner import berechne_ideale_funktionen, berechne_fitting_testdata
+from configuration.logging_configuration import log
+from model.collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, \
+    CollectionOfTestdaten
 from persistence.repository import Repository
-from util.visualisierung import plot_combined_solution
+from util.rechner import berechne_ideale_funktionen, berechne_fitting_testdata
+from util.visualisierung import plot_combined_solution, plot_each_idealfunktion_mit_testdaten
 
 
 def main():
@@ -45,21 +49,18 @@ def main():
 
     collection_of_ideale_funktionen = berechne_ideale_funktionen(
         collection_of_trainingssaetze, collection_of_idealfunktionen)
-    collection_of_ideale_funktionen.visualize_collection_as_figure("Ermittelte ideale Funktionen fuer Trainingsdaten",
-                                                                   True)
-
-    for funktion in collection_of_ideale_funktionen.items:
-        print("Vier maximale Abweichungen: {}".format(funktion.maximale_abweichung))
+    collection_of_ideale_funktionen.visualize_collection_as_figure(
+        "Ermittelte ideale Funktionen fuer Trainingsdaten", True)
 
     #########################################################
     # Calculate fitting Testdata #
     #########################################################
 
     # Calculate
+
     collection_of_testdatensatz_fitting, collection_of_testdatensatz_leftovers = berechne_fitting_testdata(
         collection_of_testdaten, collection_of_ideale_funktionen)
     collection_of_testdatensatz_fitting.visualize_collection_as_figure("Fitting Testdaten")
-    print("Anzahl fitting Testdaten: {}".format(len(collection_of_testdatensatz_fitting.items)))
 
     # Map and persist
     fitting_testdaten_entities = collection_of_testdatensatz_fitting.to_entities()
@@ -69,26 +70,13 @@ def main():
     # Visualize #
     #########################################################
 
+    # All combined
     plot_combined_solution(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
                            collection_of_testdatensatz_leftovers)
 
-    print("Laenge: {}".format(len(collection_of_testdatensatz_fitting.items)))
-    for idealfunktion in collection_of_ideale_funktionen.items:
-        collection_of_single_idealfunktion = CollectionOfIdealfunktionen()
-        collection_of_single_idealfunktion.items.append(idealfunktion)
-        collection_of_testdaten_fitting_ideal = CollectionOfTestdaten()
-        collection_of_all_testdaten = CollectionOfTestdaten()
-        collection_of_all_testdaten.items = collection_of_testdaten.items.copy()
-        for item in collection_of_testdatensatz_fitting.items:
-            if item.ideal_funk == idealfunktion.id:
-                collection_of_testdaten_fitting_ideal.add_item(item)
-        collection_of_all_testdaten.subtract(collection_of_testdaten_fitting_ideal)
-        print("Länge Gesamt {} | Fitting {} | Not fitting {}".format(len(collection_of_testdaten_fitting_ideal.items) + len(collection_of_all_testdaten.items), len(collection_of_testdaten_fitting_ideal.items), len(collection_of_all_testdaten.items)))
-
-        plot_combined_solution(collection_of_testdaten_fitting_ideal, collection_of_single_idealfunktion,
-                               collection_of_all_testdaten)
-    # plot_each_idealfunktion_with_testdaten(collection_of_ideale_funktionen, collection_of_testdaten,
-    #                                        collection_of_testdatensatz_fitting)
+    # Each Idealfunktion
+    plot_each_idealfunktion_mit_testdaten(collection_of_testdatensatz_fitting, collection_of_ideale_funktionen,
+                                          collection_of_testdaten)
 
     plt.show()
 
