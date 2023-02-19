@@ -1,7 +1,5 @@
 # Import the default logging module
 import logging
-# Create our demo logger
-import sys
 
 log = logging.getLogger('FindBestFitsLogger')
 # Set a log level for the logger

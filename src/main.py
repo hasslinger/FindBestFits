@@ -1,7 +1,6 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from configuration.logging_configuration import log
 from model.collections_wrapper import CollectionOfTrainingsfunktionen, CollectionOfIdealfunktionen, \
     CollectionOfTestdaten
 from persistence.repository import Repository
@@ -19,17 +18,17 @@ def main():
     #########################################################
 
     # Trainingssaetze
-    df_train = pd.read_csv('resources/data/train.csv')
+    df_train = pd.read_csv('../resources/data/train.csv')
     collection_of_trainingssaetze = CollectionOfTrainingsfunktionen(df_train)
     collection_of_trainingssaetze.visualize_collection_as_figure()
 
     # Idealfunktionen
-    df_ideal = pd.read_csv('resources/data/ideal.csv')
+    df_ideal = pd.read_csv('../resources/data/ideal.csv')
     collection_of_idealfunktionen = CollectionOfIdealfunktionen(df_ideal)
     collection_of_idealfunktionen.visualize_collection_as_figure()
 
     # Testdaten
-    df_test = pd.read_csv('resources/data/test.csv')
+    df_test = pd.read_csv('../resources/data/test.csv')
     collection_of_testdaten = CollectionOfTestdaten(df_test)
     collection_of_testdaten.visualize_collection_as_figure()
 
