@@ -50,7 +50,7 @@ class CollectionOfDatensaetze(ABC):
 
     def get_new_collection_with_zugeordnete_items(self, ids):
         '''Filtert Funktionen heraus, welche einer der ids zugeordnet sind und returned eine neue Collection'''
-        return self.__class__(np.array(filter(lambda x: x.get_zuordnung() in ids, self.items)))
+        return self.__class__(np.array(list(filter(lambda x: x.get_zuordnung() in ids, self.items))))
 
     def length(self):
         return len(self.items)
