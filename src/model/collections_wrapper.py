@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from operator import attrgetter
 
+import numpy as np
 import pandas as pd
+from numpy import ndarray
 
 from configuration.logging_configuration import log
 from exception.FindBestFitsException import FindBestFitsException
@@ -20,11 +22,11 @@ class CollectionOfDatensaetze(ABC):
 
     @abstractmethod
     def __init__(self, data, dataset_class):
-        self.items = []
+        self.items = np.array([])
         if isinstance(data, pd.DataFrame):
             for id in data.columns.drop('x').values:
-                self.items.append(dataset_class(data['x'], data[id], id))
-        elif isinstance(data, list):
+                self.items = np.append(self.items, dataset_class(data['x'], data[id], id))
+        elif isinstance(data, ndarray):
             self.items = data
 
     @abstractmethod
@@ -33,11 +35,11 @@ class CollectionOfDatensaetze(ABC):
 
     def add_item(self, item):
         log.debug('Funktion %s wird der Collection %s hinzugefuegt.', item, self)
-        self.items.append(item)
+        self.items = np.append(self.items, item)
 
     def remove_if_present(self, item):
         '''Entfernt alle Testdaten dessen x und y Wert dem von item entspricht'''
-        self.items = [x for x in self.items if not (x.x == item.x and x.y == item.y)]
+        self.items = np.array([x for x in self.items if not (x.x == item.x and x.y == item.y)])
 
     def plot_all_items(self, color='grey'):
         for item in self.items:
@@ -48,7 +50,7 @@ class CollectionOfDatensaetze(ABC):
 
     def get_new_collection_with_zugeordnete_items(self, ids):
         '''Filtert Funktionen heraus, welche einer der ids zugeordnet sind und returned eine neue Collection'''
-        return self.__class__(list(filter(lambda x: x.get_zuordnung() in ids, self.items)))
+        return self.__class__(np.array(filter(lambda x: x.get_zuordnung() in ids, self.items)))
 
     def length(self):
         return len(self.items)
@@ -98,7 +100,7 @@ class CollectionOfTestdaten(CollectionOfDatensaetze):
 
     def __init__(self, data=None):
         if isinstance(data, pd.DataFrame):
-            data = [(Testdatensatz(row.x, row.y, index)) for index, row in data.iterrows()]
+            data = np.array([(Testdatensatz(row.x, row.y, index)) for index, row in data.iterrows()])
         super().__init__(data, Testdatensatz)
 
     def visualize_collection_as_figure(self, label="Bereitgestellte Testdaten", legend=False, groesse=20):
