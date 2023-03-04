@@ -24,7 +24,7 @@ class CollectionOfDatensaetze(ABC):
         if isinstance(data, pd.DataFrame):
             for id in data.columns.drop('x').values:
                 self.items.append(dataset_class(data['x'], data[id], id))
-        elif isinstance(data, list): #benötigt? noch nicht beschrieben in Hausarbeit
+        elif isinstance(data, list):
             self.items = data
 
     @abstractmethod
