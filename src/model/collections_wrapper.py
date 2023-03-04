@@ -6,30 +6,30 @@ import pandas as pd
 from configuration.logging_configuration import log
 from exception.FindBestFitsException import FindBestFitsException
 from model.funktionen import IdealFunktion, Trainingsfunktion, Testdatensatz
-from util.visualisierung import plot_array_of_functions
+from util.visualisierung import plot_array_of_datensaetze
 
 
-class CollectionOfFunktionen(ABC):
+class CollectionOfDatensaetze(ABC):
     '''
-    Abstrakte Oberklasse fuer alle Collections von Funktionen.
-    Diese Collections dienen als Wrapper um verschiedene Funktionstypen
+    Abstrakte Oberklasse fuer alle Collections von Datensaetzen.
+    Diese Collections dienen als Wrapper um verschiedene Datensaetze
     (Trainingsfunktion, IdealFunktion, Testdatensatz) zu halten.
-    Es werden wiederkehrend auftretendende Operationen auf den Sammlungen von Funktionen zentralisiert.
-    Operationen, die unabhängig vom Funktionstyp sind, werden in dieser Klasse gesammelt.
+    Es werden wiederkehrend auftretendende Operationen auf den Sammlungen von Datensaetzen zentralisiert.
+    Operationen, die unabhängig vom Datensaetztyp sind, werden in dieser Klasse gesammelt.
     '''
 
     @abstractmethod
-    def __init__(self, data, function_class):
+    def __init__(self, data, dataset_class):
         self.items = []
         if isinstance(data, pd.DataFrame):
-            for funktionId in data.columns.drop('x').values:
-                self.items.append(function_class(data['x'], data[funktionId], funktionId))
-        elif isinstance(data, list):
+            for id in data.columns.drop('x').values:
+                self.items.append(dataset_class(data['x'], data[id], id))
+        elif isinstance(data, list): #benötigt? noch nicht beschrieben in Hausarbeit
             self.items = data
 
     @abstractmethod
     def visualize_collection_as_figure(self, label, legend, groesse):
-        plot_array_of_functions(self.items, label, legend, groesse)
+        plot_array_of_datensaetze(self.items, label, legend, groesse)
 
     def add_item(self, item):
         log.debug('Funktion %s wird der Collection %s hinzugefuegt.', item, self)
@@ -54,7 +54,7 @@ class CollectionOfFunktionen(ABC):
         return len(self.items)
 
 
-class CollectionOfTrainingsfunktionen(CollectionOfFunktionen):
+class CollectionOfTrainingsfunktionen(CollectionOfDatensaetze):
     '''
     Eine Wrapper Klasse zur Sammlung von Trainingsfunktionen.
     '''
@@ -66,7 +66,7 @@ class CollectionOfTrainingsfunktionen(CollectionOfFunktionen):
         super().visualize_collection_as_figure(label, legend, groesse)
 
 
-class CollectionOfIdealfunktionen(CollectionOfFunktionen):
+class CollectionOfIdealfunktionen(CollectionOfDatensaetze):
     '''
     Eine Wrapper Klasse zur Sammlung von Idealfunktionen.
     '''
@@ -91,7 +91,7 @@ class CollectionOfIdealfunktionen(CollectionOfFunktionen):
         return colors
 
 
-class CollectionOfTestdaten(CollectionOfFunktionen):
+class CollectionOfTestdaten(CollectionOfDatensaetze):
     '''
     Eine Wrapper Klasse zur Sammlung von Testdaten.
     '''

@@ -5,7 +5,6 @@ import numpy as np
 from configuration.logging_configuration import log
 from model.collections_wrapper import CollectionOfTestdaten, CollectionOfIdealfunktionen
 
-
 def berechne_quadratische_abweichung(idealfunktion, trainingsfunktion):
     '''
     Berechnet die quadratische Abweichung zwischen den y-Werten von zwei Funktion

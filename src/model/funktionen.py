@@ -7,10 +7,10 @@ from persistence.entities import Testdaten
 from model.plotter import ScatterPlotter, LinePlotter
 
 
-class Funktion(ABC):
+class Datensatz(ABC):
     '''
-    Abstrakte Oberklasse fuer alle im Programm genutzten Funktionen (Trainingsfunktion, IdealFunktion, Testdatensatz).
-    Jede Funktion muss bestimmte Attribute haben, welche in der Oberklasse gesammelt werden.
+    Abstrakte Oberklasse fuer alle im Programm genutzten Datensaetze (Trainingsfunktion, IdealFunktion, Testdatensatz).
+    Jeder Datensatz muss bestimmte Attribute haben, welche in der Oberklasse gesammelt werden.
     Außerdem werden Methoden gesammelt, die auf allen Funktionen gleichermaßen ausgefuehrt werden.
     '''
     @abstractmethod
@@ -34,20 +34,20 @@ class Funktion(ABC):
         pass
 
 
-class Trainingsfunktion(Funktion):
+class Trainingsfunktion(Datensatz):
     '''
     Eine Klasse fuer alle Trainingsfunktionen.
     Zur Visualisierung der Trainingsfunktionen soll in diesem Fall der ScatterPlotter genutzt werden.
     X und Y werden bei dieser Funktion durch pandas Series dargestellt.
     '''
     def __init__(self, x, y, label):
-        super().__init__(x, y, label, ScatterPlotter())
+        super().__init__(x, y, label, ScatterPlotter)
 
     def get_zuordnung(self):
         return self.id
 
 
-class IdealFunktion(Funktion):
+class IdealFunktion(Datensatz):
     '''
     Eine Klasse fuer alle idealen Funktionen.
     Zur Visualisierung der idealen Funktionen soll in diesem Fall der LinePlotter genutzt werden.
@@ -55,7 +55,7 @@ class IdealFunktion(Funktion):
     Zudem wird pro idealfunktion die Summe der Abweichungen zu den Trainingsdaten und die maximale Abweichung gehalten.
     '''
     def __init__(self, x, y, label):
-        super().__init__(x, y, label, LinePlotter())
+        super().__init__(x, y, label, LinePlotter)
         self.summe_abweichungen = None
         self.maximale_abweichung = None
 
@@ -73,7 +73,7 @@ class IdealFunktion(Funktion):
         return self.id
 
 
-class Testdatensatz(Funktion):
+class Testdatensatz(Datensatz):
     '''
     Eine Klasse fuer alle Testdatensaetze.
     Zur Visualisierung der idealen Funktionen soll in diesem Fall der ScatterPlotter genutzt werden.
@@ -82,7 +82,7 @@ class Testdatensatz(Funktion):
     Das Resultat kann dann direkt in eine Entitaet umgewandelt werden.
     '''
     def __init__(self, x, y, id):
-        super().__init__(x, y, id, ScatterPlotter())
+        super().__init__(x, y, id, ScatterPlotter)
         self.delta_y = None
         self.ideal_funk = None
 

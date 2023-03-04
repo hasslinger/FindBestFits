@@ -7,18 +7,18 @@ from configuration.logging_configuration import log
 from exception.FindBestFitsException import FindBestFitsException
 
 
-def plot_array_of_functions(array_of_functions, title, legend, groesse):
+def plot_array_of_datensaetze(array_of_datensaetze, title, legend, groesse):
     '''
-    Plottet alle Funktionen eines Typs mit deren jeweiliger plot Funktion zusammen in einer Grafik.
-    :param array_of_functions: Das Array mit den Funktionen
+    Plottet alle Datensaetze eines Typs mit deren jeweiliger plot Funktion zusammen in einer Grafik.
+    :param array_of_datensaetze: Das Array mit den Datensaetzen
     :param title: Der Titel des Diagramms
     :param legend: Boolean ob eine Legende angezeigt werden soll
     :param groesse: Die Groesse des jeweiligen Plotelements (z.B. linewidth oder size)
     '''
     plt.figure()
     plt.style.use('default')
-    for given_function in array_of_functions:
-        given_function.plot(legend, groesse)
+    for given_dataset in array_of_datensaetze:
+        given_dataset.plot(legend, groesse)
     plt.title(title)
     plt.xlabel('X')
     plt.ylabel('Y')
