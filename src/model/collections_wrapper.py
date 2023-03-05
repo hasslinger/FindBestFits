@@ -64,7 +64,7 @@ class CollectionOfTrainingsfunktionen(CollectionOfDatensaetze):
     def __init__(self, data=None):
         super().__init__(data, Trainingsfunktion)
 
-    def visualize_collection_as_figure(self, label="Trainingsdatensätze", legend=True, groesse=0.8):
+    def visualize_collection_as_figure(self, label="Bereitgestellte Trainingsdatensätze", legend=True, groesse=0.8):
         super().visualize_collection_as_figure(label, legend, groesse)
 
 
@@ -76,7 +76,7 @@ class CollectionOfIdealfunktionen(CollectionOfDatensaetze):
     def __init__(self, data=None):
         super().__init__(data, IdealFunktion)
 
-    def visualize_collection_as_figure(self, label="Bereitgestellte ideale Funktionen", legend=False, groesse=0.8):
+    def visualize_collection_as_figure(self, label="Bereitgestellte Idealunktionen", legend=False, groesse=0.8):
         super().visualize_collection_as_figure(label, legend, groesse)
 
     def find_funktion_min_abweichungen(self):

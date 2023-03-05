@@ -62,7 +62,8 @@ def main():
     # Calculate
     collection_of_testdatensatz_fitting, collection_of_testdatensatz_leftovers = berechne_fitting_testdata(
         collection_of_testdaten, collection_of_ideale_funktionen)
-    collection_of_testdatensatz_fitting.visualize_collection_as_figure("Fitting Testdaten")
+    collection_of_testdatensatz_fitting.visualize_collection_as_figure(
+        "Testdaten die sich an eine Idealfunktion anpassen lassen")
 
     # Map and persist
     fitting_testdaten_entities = collection_of_testdatensatz_fitting.to_entities()
